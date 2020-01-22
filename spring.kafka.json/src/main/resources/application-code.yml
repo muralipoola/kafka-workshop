@@ -1,0 +1,3 @@
+employee-topic-name: employee.topic
+course-topic-name: course.topic
+bootstrap-servers: localhost:9092
