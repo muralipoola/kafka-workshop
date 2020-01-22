@@ -26,7 +26,8 @@ public class CourseController {
   @RequestMapping(method = RequestMethod.GET)
   public Metadata publish(@RequestParam String name, @RequestParam int duration)
       throws ExecutionException, InterruptedException {
-    SendResult<String, Course> result = template.send(topicName, new Course(name, duration)).get();
+    String key = String.format("course-%s", name);
+    SendResult<String, Course> result = template.send(topicName, key, new Course(name, duration)).get();
     RecordMetadata metadata = result.getRecordMetadata();
     return new Metadata(metadata.topic(), metadata.partition(), metadata.offset());
   }

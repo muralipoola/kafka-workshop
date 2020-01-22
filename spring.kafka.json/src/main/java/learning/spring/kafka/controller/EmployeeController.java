@@ -25,8 +25,10 @@ public class EmployeeController {
   private String topicName;
 
   @RequestMapping(method = RequestMethod.GET)
-  public Metadata publish(@RequestParam int id, @RequestParam String name) throws ExecutionException, InterruptedException {
-    SendResult<String, Employee> result = template.send(topicName, new Employee(id, name)).get();
+  public Metadata publish(@RequestParam int id, @RequestParam String name)
+      throws ExecutionException, InterruptedException {
+    String key = String.format("employee-%d", id);
+    SendResult<String, Employee> result = template.send(topicName, key, new Employee(id, name)).get();
     RecordMetadata metadata = result.getRecordMetadata();
     return new Metadata(metadata.topic(), metadata.partition(), metadata.offset());
   }
