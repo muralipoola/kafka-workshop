@@ -2,4 +2,6 @@ rootProject.name = 'learning.kafka'
 include 'apache.kafka'
 include 'spring.kafka'
 include 'spring.kafka.json'
+include 'Completed:reactor.kafka'
+findProject(':Completed:reactor.kafka')?.name = 'reactor.kafka'
 
