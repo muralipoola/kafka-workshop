@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'learning.spring.kafka'
+group 'learning.kafka'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
