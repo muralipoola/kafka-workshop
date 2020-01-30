@@ -24,7 +24,9 @@ public class ProducerController {
 
   @RequestMapping(method = RequestMethod.GET)
   public Metadata publish(@RequestParam String message) throws ExecutionException, InterruptedException {
-    SendResult<String, String> result = template.send(topicName, message).get();
+    //TODO:: Send to kafka using Kafka Template synchronously
+    SendResult<String, String> result = null;
+    
     RecordMetadata metadata = result.getRecordMetadata();
     return new Metadata(metadata.topic(), metadata.partition(), metadata.offset());
   }

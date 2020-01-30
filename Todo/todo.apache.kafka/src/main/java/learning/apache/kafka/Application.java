@@ -25,7 +25,11 @@ public class Application {
 //    MessageProducerWithKey producerWithKey = new MessageProducerWithKey();
 //    producerWithKey.produceMessagesToKafka();
 
-//    logger.log(Level.INFO, "Consuming messages from Kafka::");
+//    logger.log(Level.INFO, "Consuming messages from Kafka with auto commit::");
+//    MessageConsumer consumer = new MessageConsumer();
+//    consumer.consumeMessagesFromKafka();
+
+//    logger.log(Level.INFO, "Consuming messages from Kafka with manual commit::");
 //    MessageConsumer consumer = new MessageConsumer();
 //    consumer.consumeMessagesFromKafka();
   }

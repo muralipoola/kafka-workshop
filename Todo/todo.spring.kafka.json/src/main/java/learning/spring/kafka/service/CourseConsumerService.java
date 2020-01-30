@@ -13,7 +13,7 @@ public class CourseConsumerService {
   public static Logger logger = LoggerFactory.getLogger(CourseConsumerService.class);
 
   @KafkaListener(topics = "#{'${course-topic-name}'}", groupId = "course-consumer")
-  //@KafkaListener(topics = "#{'${course-topic-name}'}", groupId = "course-consumer", containerFactory = "kafkaListenerContainerFactoryForCourse")
+  //TODO:: Use consumerFactory to customize configuration through code
   public void consumeMessagesFromKafka(@Payload Course record) {
     logger.info(record.toString());
   }

@@ -6,10 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class MessageProducerWithKey {
 
@@ -17,14 +15,17 @@ public class MessageProducerWithKey {
 
   public void produceMessagesToKafka() throws ExecutionException, InterruptedException {
 
-    Properties producerProperties = getProducerProperties();
+    Properties producerProperties = Util.getProducerProperties();
     Producer<String, String> producer = new KafkaProducer<>(producerProperties);
 
     for (int i = 1; i <= 10; i++) {
 
       String message = "keyed message " + i;
+      String key = String.valueOf(i % 3);
+
+      //TODO:: Provide key when sending message to kafka and observe the partition assigned
       RecordMetadata metadata = producer
-          .send(new ProducerRecord<>(AppConfig.KafkaTopicName, String.valueOf(i % 3), message)).get();
+          .send(new ProducerRecord<>(AppConfig.KafkaTopicName, message)).get();
 
       logger.log(Level.INFO,
           String.format("Message - [%s] produced to topic - [%s] with partition [%d] and offset [%d]",
@@ -33,15 +34,6 @@ public class MessageProducerWithKey {
 
     producer.flush();
     producer.close();
-  }
-
-  private Properties getProducerProperties() {
-    Properties producerProperties = new Properties();
-
-    producerProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, AppConfig.KafkaServers);
-    producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    return producerProperties;
   }
 
 }

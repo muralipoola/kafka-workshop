@@ -18,21 +18,15 @@ public class MessageProducerCallback {
 
   public void produceMessagesToKafka() throws ExecutionException, InterruptedException {
 
-    Properties producerProperties = getProducerProperties();
+    Properties producerProperties = Util.getProducerProperties();
     Producer<String, String> producer = new KafkaProducer<>(producerProperties);
 
     for (int i = 1; i <= 10; i++) {
 
       String message = "callback message " + i;
-      producer.send(new ProducerRecord<>(AppConfig.KafkaTopicName, message),
-          new Callback() {
-            @Override
-            public void onCompletion(RecordMetadata metadata, Exception exception) {
-              logger.log(Level.INFO,
-                  String.format("Message - produced to topic - [%s] with partition [%d] and offset [%d]",
-                      metadata.topic(), metadata.partition(), metadata.offset()));
-            }
-          });
+
+      //TODO:: Provide callback here to get feedback on metadata
+      producer.send(new ProducerRecord<>(AppConfig.KafkaTopicName, message));
 
     }
 
@@ -40,13 +34,13 @@ public class MessageProducerCallback {
     producer.close();
   }
 
-  private Properties getProducerProperties() {
-    Properties producerProperties = new Properties();
+  public static class ProducerCallBack implements Callback {
 
-    producerProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, AppConfig.KafkaServers);
-    producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    return producerProperties;
+    @Override
+    public void onCompletion(RecordMetadata metadata, Exception exception) {
+      logger.log(Level.INFO,
+          String.format("Message - produced to topic - [%s] with partition [%d] and offset [%d]",
+              metadata.topic(), metadata.partition(), metadata.offset()));
+    }
   }
-
 }
