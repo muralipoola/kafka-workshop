@@ -6,6 +6,7 @@ public class ConsumerConfig {
   private String valueDeserializer;
   private String groupId;
   private String autoOffsetReset;
+  private String clientId;
 
   public String getKeyDeserializer() {
     return keyDeserializer;
@@ -38,4 +39,8 @@ public class ConsumerConfig {
   public void setAutoOffsetReset(String autoOffsetReset) {
     this.autoOffsetReset = autoOffsetReset;
   }
+
+  public String getClientId() { return clientId; }
+
+  public void setClientId(String clientId) { this.clientId = clientId; }
 }
