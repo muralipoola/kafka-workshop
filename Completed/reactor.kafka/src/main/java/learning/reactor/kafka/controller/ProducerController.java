@@ -1,6 +1,7 @@
 package learning.reactor.kafka.controller;
 
 import learning.reactor.kafka.config.AppConfig;
+import learning.reactor.kafka.model.Metadata;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
-import reactor.kafka.sender.SenderResult;
 
 @RequestMapping("producer")
 @RestController
@@ -22,16 +22,34 @@ public class ProducerController {
   private static final Logger log = LoggerFactory.getLogger(ProducerController.class);
 
   @Autowired
-  private KafkaSender kafkaSender;
+  private KafkaSender<String, String> kafkaSender;
 
   @RequestMapping(method = RequestMethod.GET)
-  public String publish(@RequestParam String message) {
-    SenderRecord record = SenderRecord.create(new ProducerRecord<>(AppConfig.KafkaTopicName, message), "correlation");
-    Object result = kafkaSender.send(Mono.just(record)).blockLast();
-//    SenderResult senderResult = kafkaSender.send(Mono.just(record))
-//        .doOnError(e -> log.error("Send failed"))
-//        .blockLast();
-    return "hello";
+  public Metadata publish(@RequestParam String message) {
+    SenderRecord<String, String, String> record = SenderRecord
+        .create(new ProducerRecord<>(AppConfig.KafkaTopicName, "key", message), "correlation");
+
+    Metadata metadata = new Metadata();
+
+    kafkaSender.send(Mono.just(record))
+        .doOnNext(stringSenderResult -> {
+          RecordMetadata recordMetadata = stringSenderResult.recordMetadata();
+          log.info("Message {} sent successfully, topic-partition={}-{} offset={}\n",
+              stringSenderResult.correlationMetadata(),
+              recordMetadata.topic(),
+              recordMetadata.partition(),
+              recordMetadata.offset());
+          metadata.setOffset(recordMetadata.offset());
+          metadata.setPartition(recordMetadata.partition());
+          metadata.setTopicName(recordMetadata.topic());
+        }).blockLast();
+
+    //    SenderResult<String> senderResult = kafkaSender.send(Mono.just(record))
+    //        .doOnError(e -> log.error("Send failed"))
+    //        .blockLast();
+
+    return metadata;
+
   }
 
 }
