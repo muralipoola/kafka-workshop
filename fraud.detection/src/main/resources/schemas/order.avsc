@@ -1,0 +1,19 @@
+{
+ "type": "record",
+ "namespace": "com.thoughtworks.kafka.workshop",
+ "name": "Order",
+ "fields": [
+    {
+      "name": "userId",
+      "type": "string"
+    },
+    {
+     "name": "numberOfItems",
+     "type": "int"
+    },
+    {
+     "name": "totalAmount",
+     "type": "float"
+    }
+ ]
+}

@@ -31,5 +31,8 @@ out/
 target/
 security-report/
 
+**/target/
+**/*.iml
+
 # ignore files
 .DS_Store
