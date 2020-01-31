@@ -4,3 +4,5 @@ Please make sure to have prerequisites installed before hand:
 * Have Java 1.8 setup - https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 * Have IntelliJ IDEA installed
 * Clone git repo - https://github.com/muralipoola/kafka-workshop.git
+* Install KafkaTool http://www.kafkatool.com/download.html (UI for Kafka)
+* Install telnet
