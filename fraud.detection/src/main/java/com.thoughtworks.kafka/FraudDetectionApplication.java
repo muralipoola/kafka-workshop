@@ -11,6 +11,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.ValueMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,16 +38,29 @@ public class FraudDetectionApplication {
         props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
         //Create a StreamBuilder
-
-        //Write a data pipeline
+        StreamsBuilder streamsBuilder = new StreamsBuilder();
+        streamsBuilder.<String,Order>stream("payments")
+                .filter((transaction, order) -> !order.getUserId().toString().equals(""))
+                .mapValues(order -> Order.newBuilder().setUserId(order.getUserId().toString().toUpperCase()).setTotalAmount(order.getTotalAmount()).setNumberOfItems(order.getNumberOfItems()).build())
+                .peek(FraudDetectionApplication::printOnExit)
+                .to("validated-payments");
 
         //Create Topology
+        Topology topology = streamsBuilder.build();
 
         //Create KafkaStreams
+        KafkaStreams streams = new KafkaStreams(topology,props);
 
         //Start the Stream
+        streams.start();
 
         //Close the stream in a shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread("shutdown-hook"){
+            @Override
+            public void run() {
+                streams.close();
+            }
+        });
     }
 
     private static void printOnError(String transactionId, Order order) {
