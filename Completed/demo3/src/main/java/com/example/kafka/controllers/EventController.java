@@ -21,8 +21,9 @@ public class EventController {
     private EventPublisher eventPublisher;
 
     @RequestMapping(method = RequestMethod.GET)
-    public RecordMetadata publishEvent(@RequestParam int user, @RequestParam String createdBy) throws ExecutionException, InterruptedException {
+    public boolean publishEvent(@RequestParam int user, @RequestParam String createdBy) throws ExecutionException, InterruptedException {
         Event event = new Event(UUID.randomUUID().toString(), user, createdBy, new Date());
-        return eventPublisher.publish(event);
+        eventPublisher.publish(event);
+        return true;
     }
 }
