@@ -141,7 +141,7 @@
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.9.1</version>
+            <version>1.11.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.confluent/kafka-streams-avro-serde -->
         <dependency>
